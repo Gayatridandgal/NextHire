@@ -1,0 +1,5 @@
+{
+  "name": "nexthire",
+  "private": true,
+  "workspaces": ["client", "server"]
+}
