@@ -118,14 +118,20 @@ Visit: [http://localhost:5173](http://localhost:5173) 🎉
 ### 🏠 Welcome / Dashboard
 
 *Inspiring vision and call-to-action*
+<img width="951" height="621" alt="Screenshot 2025-08-16 224636" src="https://github.com/user-attachments/assets/1a002045-a979-487f-9e98-d12ae3c5e748" />
+
 
 ### 📂 Upload & Check
 
 *Upload resume, parse, and run ATS analysis*
+<img width="1204" height="481" alt="Screenshot 2025-08-16 224649" src="https://github.com/user-attachments/assets/ac170805-6c51-42d6-bab5-3b83a425a97e" />
+
 
 ### 📘 Resources
 
 *Practical resume and interview tips*
+<img width="996" height="570" alt="Screenshot 2025-08-16 224719" src="https://github.com/user-attachments/assets/c0b6885e-cf99-48a5-b341-1c546a895b49" />
+
 
 
 
