@@ -1,6 +1,6 @@
-import { Router } from 'express';
-import { scoreResume } from '../controllers/scoreController.js';
+// import { Router } from 'express';
+// import { analyzeHandler } from '../controllers/scoreController.js';
 
-const router = Router();
-router.post('/', scoreResume); // POST /api/score
-export default router;
+// const router = Router();
+// router.post('/', analyzeHandler); // POST /api/score
+// export default router;

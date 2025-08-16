@@ -1,47 +1,61 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { config } from '../config.js';
+// services/geminiService.js
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { config } from "../config.js";
 
 const genAI = new GoogleGenerativeAI(config.geminiApiKey);
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-export async function getCareerFitScore(text, role) {
-  const prompt = `Evaluate this resume and provide a fit score (0–100) for the role of '${role}'. Only return a number and one-line reason, pipe-separated.
-Format: <score>|<reason>
-Resume:
-${text}`;
-  const resp = await model.generateContent(prompt);
-  const out = resp.response.text().trim();
-  // Expect "85|Strong frontend experience but lacks testing"
-  const [scoreStr, reason = ''] = out.split('|').map(s => s.trim());
-  const score = Math.max(0, Math.min(100, parseInt(scoreStr, 10) || 0));
-  return { score, reason };
-}
-
-export async function getATSuggestions(text, role) {
-  const prompt = `Analyze this resume text and list specific suggestions to improve ATS compatibility for a '${role}' role. 
-Return a concise JSON with:
-{
-  "keywordsToAdd": [string],
-  "sectionsMissing": [string],
-  "formattingTips": [string],
-  "redFlags": [string]
-}
-Resume:
-${text}`;
-  const resp = await model.generateContent(prompt);
-  // Response may be fenced code; strip backticks if present
-  const raw = resp.response.text().replace(/```json|```/g, '').trim();
+async function safeGenerate(prompt) {
   try {
-    return JSON.parse(raw);
-  } catch {
-    return { keywordsToAdd: [], sectionsMissing: [], formattingTips: [], redFlags: [], raw };
+    const resp = await model.generateContent(prompt);
+    return resp.response.text();
+  } catch (err) {
+    console.error("❌ Gemini error:", err.response?.data || err.message || err);
+    if (err.status === 429) {
+      throw new Error("Rate limit reached. Please wait and try again.");
+    }
+    throw new Error("Gemini request failed");
   }
 }
 
-export async function getRewrittenBullet(bullet, role) {
-  const prompt = `Rewrite this resume line to be more results-driven and tailored to a '${role}' role.
-Make it one line, start with a strong verb, quantify impact if possible, and keep under 25 words.
-Original: "${bullet}"`;
-  const resp = await model.generateContent(prompt);
-  return resp.response.text().replace(/(^"|"$)/g, '').trim();
+export async function analyzeResume(text, role, bullet = "") {
+  const prompt = `
+You are an AI resume analyzer.
+1. Fit score: <score>|<reason>
+2. ATS JSON (keywordsToAdd, sectionsMissing, formattingTips, redFlags).
+3. Rewrite this line for '${role}': "${bullet}"
+Resume:
+${text}
+`;
+
+  const raw = await safeGenerate(prompt);
+
+  let score = 0, reason = "N/A", ats = {}, rewritten = "";
+
+  try {
+    const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+
+    // Score section
+    const scoreLine = lines.find(l => l.includes("|"));
+    if (scoreLine) {
+      const [s, r] = scoreLine.split("|").map(x => x.trim());
+      score = parseInt(s, 10) || 0;
+      reason = r || "";
+    }
+
+    // JSON block
+    const jsonStart = raw.indexOf("{");
+    const jsonEnd = raw.lastIndexOf("}");
+    if (jsonStart !== -1 && jsonEnd !== -1) {
+      const jsonStr = raw.slice(jsonStart, jsonEnd + 1);
+      ats = JSON.parse(jsonStr);
+    }
+
+    // Last line = rewrite
+    rewritten = lines[lines.length - 1] || "";
+  } catch (err) {
+    console.error("⚠️ Failed to parse Gemini output:", raw);
+  }
+
+  return { score, reason, ats, rewritten, raw };
 }

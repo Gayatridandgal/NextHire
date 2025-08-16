@@ -1,11 +1,8 @@
 {
- 
-  "version": "1.0.0",
-
-
   "name": "nexthire-server",
-  "type": "module",
-  "main": "app.js",
+   "version": "1.0.0",
+   "type": "module",
+   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
     "start": "node app.js"
@@ -39,7 +36,3 @@
   }
 }
 
-
-{
-  
-}

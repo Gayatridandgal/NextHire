@@ -1,10 +1,16 @@
-import { getCareerFitScore } from '../services/geminiService.js';
-import { scoreSchema } from '../utils/validators.js';
 
-export const scoreResume = async (req, res, next) => {
-  try {
-    const { text, role } = scoreSchema.parse(req.body);
-    const result = await getCareerFitScore(text, role);
-    res.json(result);
-  } catch (err) { next(err); }
-};
+// import { analyzeResume } from '../services/geminiService.js';
+// export async function analyzeHandler(req, res) {
+//   try {
+//     const { text, role, bullet } = req.body;
+//     if (!text || !role) {
+//       return res.status(400).json({ error: "Missing resume text or role" });
+//     }
+
+//     const result = await analyzeResume(text, role, bullet);
+//     res.json(result);
+//   } catch (err) {
+//     console.error("❌ Analysis failed:", err.response?.data || err.message || err);
+//     res.status(500).json({ error: "Gemini analysis failed" });
+//   }
+// }
