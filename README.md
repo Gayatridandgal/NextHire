@@ -1,3 +1,11 @@
+# 🚀 NextHire – AI Resume & LinkedIn Analyzer  
+
+NextHire helps job seekers **optimize their resumes and LinkedIn profiles** to pass ATS (Applicant Tracking Systems) and land more interviews.  
+Upload a resume or paste LinkedIn text, choose a target role, and get **AI-powered ATS feedback, keyword suggestions, and actionable improvements** in seconds.  
+
+---
+
+## ✨ Features  
 
 - 📂 **Upload Resume (PDF/DOCX)** – text parsing and analysis  
 - 🎯 **ATS Analysis** – role-aware keyword gaps, missing sections, formatting tips, and red flags  
